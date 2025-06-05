@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart - Bloom Bliss</title>
+  <style>
+    body {
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      background-color: #fffafc;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 192, 203, 0.3);
+    }
+
+    h2 {
+      text-align: center;
+      color: #d63384;
+      margin-bottom: 30px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f2f2f2;
+      padding: 15px 0;
+      flex-wrap: wrap;
+    }
+
+    .cart-item img {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .item-info {
+      flex: 1;
+      margin-left: 20px;
+    }
+
+    .item-info h4 {
+      margin: 0 0 5px;
+      color: #333;
+    }
+
+    .item-info p {
+      font-size: 14px;
+      color: #777;
+    }
+
+    .price, .quantity {
+      font-weight: bold;
+      color: #d63384;
+      margin: 0 10px;
+    }
+
+    .remove-btn {
+      background-color: #ffccd5;
+      border: none;
+      padding: 6px 12px;
+      color: #b02a4a;
+      cursor: pointer;
+      border-radius: 6px;
+      margin-left: 10px;
+    }
+
+    .total {
+      text-align: right;
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .checkout-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #d63384;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .checkout-btn:hover {
+      background-color: #ad276e;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+    }
+
+    .quantity-controls button {
+      padding: 4px 10px;
+      background-color: #ffe0eb;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      color: #d63384;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="container">
+      <h2>Your Cart</h2>
+    
+      <!-- Cart Items will be dynamically added here -->
+      <div class="cart-items"></div>
+    
+      <!-- Total -->
+      <div class="total">Total: ₹0</div>
+    
+      <!-- Checkout -->
+      <button class="checkout-btn">Proceed to Checkout</button>
+    </div>
+    
+
+
+  <script>
+  
+  // Function to update the total price
+function updateTotal() {
+  const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+  let total = 0;
+
+  // Iterate over each cart item and calculate the total price
+  cartItems.forEach(item => {
+    total += item.price * item.quantity;
+  });
+
+  // Update the total price in the DOM
+  document.querySelector('.total').textContent = `Total: ₹${total}`;
+}
+
+// Function to render cart items from localStorage
+function renderCart() {
+  const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartContainer = document.querySelector('.container');
+
+  // Clear the cart display before re-rendering
+  const cartItemsContainer = cartContainer.querySelector('.cart-items');
+  if (cartItemsContainer) {
+    cartItemsContainer.remove();
+  }
+
+  const cartItemsSection = document.createElement('div');
+  cartItemsSection.classList.add('cart-items');
+  
+  if (cartItems.length === 0) {
+    cartItemsSection.innerHTML = '<p>Your cart is empty.</p>';
+  }
+
+  cartItems.forEach(item => {
+    const cartItemElement = document.createElement('div');
+    cartItemElement.classList.add('cart-item');
+    cartItemElement.setAttribute('data-id', item.id);
+
+    cartItemElement.innerHTML = `
+      <img src="${item.image}" alt="${item.name}" />
+      <div class="item-info">
+        <h4>${item.name}</h4>
+        <p>${item.description}</p>
+      </div>
+      <div class="quantity-controls">
+        <button class="decrease">-</button>
+        <span class="quantity">${item.quantity}</span>
+        <button class="increase">+</button>
+      </div>
+      <div class="price">₹${item.price}</div>
+      <button class="remove-btn">Remove</button>
+    `;
+
+    // Add event listeners for increase, decrease, and remove buttons
+    cartItemElement.querySelector('.increase').addEventListener('click', () => updateQuantity(item.id, 1));
+    cartItemElement.querySelector('.decrease').addEventListener('click', () => updateQuantity(item.id, -1));
+    cartItemElement.querySelector('.remove-btn').addEventListener('click', () => removeItem(item.id));
+
+    cartItemsSection.appendChild(cartItemElement);
+  });
+
+  cartContainer.appendChild(cartItemsSection);
+
+  // Update the total after rendering items
+  updateTotal();
+}
+
+// Function to update the quantity of a cart item
+function updateQuantity(id, change) {
+  const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+  const item = cartItems.find(item => item.id === id);
+
+  if (item) {
+    item.quantity += change;
+
+    // Ensure quantity doesn't go below 1
+    if (item.quantity < 1) item.quantity = 1;
+
+    // Save updated cart to localStorage
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+
+    // Re-render the cart
+    renderCart();
+  }
+}
+
+// Function to remove a cart item
+function removeItem(id) {
+  let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+  cartItems = cartItems.filter(item => item.id !== id);
+
+  // Save updated cart to localStorage
+  localStorage.setItem('cart', JSON.stringify(cartItems));
+
+  // Re-render the cart
+  renderCart();
+}
+
+// Function to initialize the cart page
+function initializeCart() {
+  renderCart();
+}
+
+// Call initializeCart to render items when the page loads
+document.addEventListener('DOMContentLoaded', initializeCart);
+
+
+  </script>
+</body>
+</html>

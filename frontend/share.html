@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Share Product</title>
+  <style>
+    body {
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      text-align: center;
+      background: #fff0f5;
+      padding: 50px;
+    }
+    h2 {
+      color: #e91e63;
+    }
+    .share-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+    .share-buttons button {
+      background: #ff69b4;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .share-buttons button:hover {
+      background: #d81b60;
+    }
+    .copy-link {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Share This Lovely Bouquet 💐</h2>
+  <p>Choose a platform to share:</p>
+
+  <div class="share-buttons">
+    <button onclick="shareWhatsApp()">WhatsApp</button>
+    <button onclick="shareInstagram()">Instagram</button>
+    <button onclick="copyLink()">Copy Link</button>
+  </div>
+
+  <p class="copy-link" id="copy-msg"></p>
+
+  <script>
+    const productURL = "https://yourwebsite.com/product.html"; // Replace with actual product URL
+
+    function shareWhatsApp() {
+      const message = `Check out this beautiful flower bouquet! 🌸 ${productURL}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    function shareInstagram() {
+      window.open("https://www.instagram.com/", "_blank"); // Instagram doesn’t support direct share via link
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(productURL).then(() => {
+        document.getElementById("copy-msg").innerText = "Link copied to clipboard!";
+      });
+    }
+  </script>
+
+</body>
+</html>

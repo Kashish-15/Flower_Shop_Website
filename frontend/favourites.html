@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Favourites</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 class="heading">My <span>Favourites</span></h1>
+    <div class="box-container" id="favourites-list"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const favouritesContainer = document.getElementById('favourites-list');
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+            if (favorites.length === 0) {
+                favouritesContainer.innerHTML = "<p>No favourites added yet.</p>";
+                return;
+            }
+
+            favorites.forEach(item => {
+                const box = document.createElement('div');
+                box.classList.add('box');
+                box.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="content">
+                        <h3>${item.name}</h3>
+                        <div class="price">${item.price}</div>
+                    </div>
+                `;
+                favouritesContainer.appendChild(box);
+            });
+        });
+    </script>
+</body>
+</html>

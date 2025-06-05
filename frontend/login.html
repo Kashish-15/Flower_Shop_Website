@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | Flower Bloom</title>
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <div class="login-container">
+    <form class="login-form" onsubmit="return loginUser(event)">
+      <h2>Welcome Back</h2>
+      <p>Log in to bloom with us</p>
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+      <p class="signup-link">Don't have an account? <a href="signup.html">Sign up</a></p>
+      
+    </form>
+  </div>
+
+  <script>
+    function loginUser(event) {
+      event.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      // For demo purposes only
+      if (email === "user@flowers.com" && password === "123456") {
+        alert("Login successful!");
+        window.location.href = "index.html"; // redirect to homepage
+      } else {
+        alert("Invalid email or password");
+      }
+    }
+  </script>
+</body>
+</html>
